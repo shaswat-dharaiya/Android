@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText e1, e2;
     private Button btn_login;
+    private int countr = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +34,24 @@ public class MainActivity extends AppCompatActivity {
                 if(usr.contentEquals("admin") && psw.contentEquals("admin")) {
                     Intent intent = new Intent(".FavoriteAnimal");
                     startActivity(intent);
+                    countr = 5;
                 }
                 else{
-                    Toast.makeText(
-                            MainActivity.this,
-                            "login unsuccessful",
-                            Toast.LENGTH_SHORT
-                    ).show();
+                    if(countr>0){
+                        Toast.makeText(
+                                MainActivity.this,
+                                "login unsuccessful. Attempts remaining: "+Integer.toString(countr--),
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                    else{
+                        btn_login.setEnabled(false);
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Login Attempts exhausted. Cannot Login",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
                 }
             }
         });

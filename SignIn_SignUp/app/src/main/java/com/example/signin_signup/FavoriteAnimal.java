@@ -29,6 +29,7 @@ public class FavoriteAnimal extends AppCompatActivity {
     private static RatingBar rtn_br;
 
     private static Button alt_btn;
+    private static Button date_btn;
 
     private Button logOut;
 
@@ -42,6 +43,7 @@ public class FavoriteAnimal extends AppCompatActivity {
         ratings();
         ratingsSubmit();
         log_Out();
+        date_Page();
     }
 
     public void addListener(){
@@ -121,6 +123,7 @@ public class FavoriteAnimal extends AppCompatActivity {
 
     public void log_Out() {
         alt_btn = (Button) findViewById(R.id.button5);
+
         alt_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,6 +145,17 @@ public class FavoriteAnimal extends AppCompatActivity {
                 AlertDialog alert_dialog = alrt.create();
                 alert_dialog.setTitle("Alert");
                 alert_dialog.show();
+            }
+        });
+    }
+
+    public void date_Page(){
+        date_btn = (Button) findViewById(R.id.date);
+        date_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(".Date");
+                startActivity(intent);
             }
         });
     }
