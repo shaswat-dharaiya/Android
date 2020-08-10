@@ -2,10 +2,12 @@ package com.example.newapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -21,12 +23,15 @@ public class MainActivity extends AppCompatActivity {
     private static TextView txtView;
     private static TextView txtView2;
 
+    private static Button nextBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listView();
         skbarMethod();
+        nxtPage();
     }
 
     public void listView(){
@@ -92,6 +97,16 @@ public class MainActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 txtView2.setText("Progress: "+progVal+" / "+skbar1.getMax());
                 Toast.makeText(MainActivity.this,"Seekbar in stop",Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+    public void nxtPage(){
+        nextBtn = (Button) findViewById(R.id.next);
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(".Web");
+                startActivity(intent);
             }
         });
     }
