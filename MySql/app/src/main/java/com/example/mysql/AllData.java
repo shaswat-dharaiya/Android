@@ -1,5 +1,6 @@
 package com.example.mysql;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,18 +19,27 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class AllData extends AppCompatActivity {
+public class AllData extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     BackgroundMongo backgroundMongo;
     AlertDialog alertDialog,alertDialog1;
     String rows_prev = "";
     ArrayList<Integer> rowsDeleted = new ArrayList<>();
     int textViewCount;
-    Button delete;
+    Button delete,logout;
     TableLayout ll;
+    private GoogleApiClient googleApiClient;
+    private GoogleSignInOptions googleSignInOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +49,34 @@ public class AllData extends AppCompatActivity {
         delete = (Button) findViewById(R.id.button7);
         delete.setEnabled(false);
         ll = (TableLayout) findViewById(R.id.table2);
+        logout = (Button) findViewById(R.id.button9);
+
+        googleSignInOptions = new  GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail().build();
+
+        googleApiClient = new  GoogleApiClient.Builder(this)
+                .enableAutoManage(this,this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API,googleSignInOptions).build();
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Auth.GoogleSignInApi.signOut(googleApiClient)
+                        .setResultCallback(new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(@NonNull Status status) {
+                                if(status.isSuccess()){
+                                    startActivity(new Intent(AllData.this,MainActivity.class));
+                                    finish();
+                                }
+                                else {
+                                    Toast.makeText(AllData.this, "Could not log out.\nPlease try again", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -210,4 +248,8 @@ public class AllData extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 }

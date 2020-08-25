@@ -178,9 +178,10 @@ public class BackgroundMongo extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(final String result) {
-        lines = result.split("\n\n");
-        Intent intent;
         try {
+            lines = result.split("\n\n");
+            Intent intent;
+            Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
             if (type.equals("login")) {
                 if(lines[0].equals("Success"))
                 {

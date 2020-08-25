@@ -1,5 +1,6 @@
 package com.example.mysql;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -8,18 +9,35 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class RegisterEmploy extends AppCompatActivity {
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApi;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+
+public class RegisterEmploy extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     AlertDialog alertDialog;
     String[] colName = {"Name", "Surname", "Age", "Username", "Password", "Confirm Password"};
-
+    Button logout;
     EditText[] reg_fields = new EditText[6];
+
+    private GoogleApiClient googleApiClient;
+    private GoogleSignInOptions googleSignInOptions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_register_employ);
         reg_fields[0] = (EditText) findViewById(R.id.Name);
         reg_fields[1] = (EditText) findViewById(R.id.Surname);
@@ -27,6 +45,36 @@ public class RegisterEmploy extends AppCompatActivity {
         reg_fields[3] = (EditText) findViewById(R.id.Username);
         reg_fields[4] = (EditText) findViewById(R.id.Password);
         reg_fields[5] = (EditText) findViewById(R.id.ConfirmPassword);
+
+        logout = (Button) findViewById(R.id.logout);
+
+        googleSignInOptions = new  GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail().build();
+
+        googleApiClient = new  GoogleApiClient.Builder(this)
+                .enableAutoManage(this,this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API,googleSignInOptions).build();
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Auth.GoogleSignInApi.signOut(googleApiClient)
+                        .setResultCallback(new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(@NonNull Status status) {
+                                if(status.isSuccess()){
+                                    startActivity(new Intent(RegisterEmploy.this,MainActivity.class));
+                                    finish();
+                                }
+                                else {
+                                    Toast.makeText(RegisterEmploy.this, "Could not log out.\nPlease try again", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        });
+
     }
 
     public void doRegister(View view){
@@ -118,5 +166,17 @@ public class RegisterEmploy extends AppCompatActivity {
             e.printStackTrace();
         }
         return "Ok";
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    private void signInResult(GoogleSignInResult result){
+        if(result.isSuccess()){
+            GoogleSignInAccount account = result.getSignInAccount();
+
+        }
     }
 }
