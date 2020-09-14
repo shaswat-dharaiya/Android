@@ -139,19 +139,11 @@ public class RegisterEmploy extends AppCompatActivity implements GoogleApiClient
                                 "Valid Characters:\n" +
                                 "Alphabets.\nDigits.\nSpecial Characters: '._-')";
                     break;
-                case 4:
-                    if (!val.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8,20}$"))
-                        return "Case: "+(id)+"\nUsername must be between 8 to 20 characters long.\n" +
-                                "Atleast one Uppercase & one Lowercase Letter.\n Atleast one Digit.\n" +
-                                "Valid Characters:\n" +
-                                "\nSpecial Characters: \"!@#$%&*()-+=^\".\nNo white spaces.)";
-                    break;
                 case 5:
-                    if (!val.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8,20}$"))
-                        return "Case: "+(id)+"\nUsername must be between 8 to 20 characters long.\n" +
+                    if (!val.matches("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,20})"))
+                        return "Case: "+(id)+"\nPassword must be between 8 to 20 characters long.\n" +
                                 "Atleast one Uppercase & one Lowercase Letter.\n Atleast one Digit.\n" +
-                                "Valid Characters:\n" +
-                                "\nSpecial Characters: \"!@#$%&*()-+=^\".\nNo white spaces.)";
+                                "must contains one special symbols in the list @#$%";
                     break;
             }
         } catch (Exception e){

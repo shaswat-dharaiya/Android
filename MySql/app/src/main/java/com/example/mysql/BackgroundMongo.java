@@ -1,6 +1,7 @@
 package com.example.mysql;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +29,7 @@ public class BackgroundMongo extends AsyncTask<String, Void, String> {
     AlertDialog alertDialog;
     String type = "",username = "",bools="";
     public String[] lines;
+    ProgressDialog progressDialog;
 
     BackgroundMongo (Context ctx){
         context = ctx;
@@ -170,21 +172,33 @@ public class BackgroundMongo extends AsyncTask<String, Void, String> {
         return null;
     }
 
+    public static ProgressDialog progressWheel(Context context_new, String title, String msg, Boolean cancelable){
+        ProgressDialog progress = new ProgressDialog(context_new);
+        progress.setTitle(title);
+        progress.setMessage(msg);
+        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setCancelable(cancelable);
+        return progress;
+    }
+
     @Override
     protected void onPreExecute() {
         alertDialog = new AlertDialog.Builder(context).create();
 //        alertDialog.setTitle(type+" Status");
+        progressDialog = progressWheel(context, "Please Wait", "Loading...", false);
+        progressDialog.show();
     }
 
     @Override
     protected void onPostExecute(final String result) {
         try {
+            progressDialog.dismiss();
             lines = result.split("\n\n");
             Intent intent;
-            Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
             if (type.equals("login")) {
-                if(lines[0].equals("Success"))
-                {
+                if(lines[0].equals("Success")) {
                     alertDialog.setTitle("Status: " + lines[0]);
                     alertDialog.setMessage(lines[1]);
                     alertDialog.setCancelable(true);
@@ -199,6 +213,28 @@ public class BackgroundMongo extends AsyncTask<String, Void, String> {
                     }
                     alertDialog.show();
                 }
+                if(lines[0].equals("Failed")){
+                    alertDialog.setTitle("Status: " + lines[0]);
+                    alertDialog.setMessage(lines[1]);
+                    alertDialog.setCancelable(true);
+                    alertDialog.setButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    alertDialog.show();
+                }
+//                else{
+//                    alertDialog.setTitle("Status: Server not connected.");
+//                    alertDialog.setMessage("Please connect to the server.");
+//                    alertDialog.setCancelable(true);
+//                    alertDialog.setButton("Ok", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                        }
+//                    });
+//                    alertDialog.show();
+//                }
             }
             if (type.equals("showData")) {
                 intent = new Intent(context, AllData.class);
